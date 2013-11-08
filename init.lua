@@ -441,3 +441,82 @@ mobs:register_arrow("mobs:fireball", {
 if minetest.setting_get("log_mods") then
 	minetest.log("action", "mobs loaded")
 end
+
+
+
+-- add the rabbits
+local rabbit_colors = { "white", "grey", "brown" };
+
+for i,v in ipairs( rabbit_colors ) do
+
+   mobs:register_mob("mobs:rabbit_"..v, {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.2, -0.01, -0.2, 0.2, 0.4, 0.2},
+	visual = "mesh",
+	mesh = "mobs_rabbit.x",
+	visual_size = {x=0.5, y=0.5},
+	textures = {"mobs_rabbit_"..v..".png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 15,
+		stand_start = 0,
+		stand_end = 30,
+		walk_start = 40,
+		walk_end = 60,
+	},
+	
+	on_rightclick = function(self, clicker)
+		if clicker:is_player() and clicker:get_inventory() then
+			clicker:get_inventory():add_item("main", "mobs:rabbit_"..v)
+			self.object:remove()
+		end
+	end,
+   })
+   mobs:register_spawn("mobs:rabbit_"..v, {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
+end
+
+
+mobs:register_mob("mobs:donkey", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_donkey.x",
+	visual_size = {x=2.0, y=2.5},
+	textures = {"mobs_donkey.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 15,
+		stand_start = 0,
+		stand_end = 30,
+		walk_start = 40,
+		walk_end = 60,
+	},
+	
+	on_rightclick = function(self, clicker)
+		if clicker:is_player() and clicker:get_inventory() then
+			clicker:get_inventory():add_item("main", "mobs:donkey")
+			self.object:remove()
+		end
+	end,
+   })
+   mobs:register_spawn("mobs:donkey", {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
+
+
