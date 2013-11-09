@@ -454,7 +454,7 @@ for i,v in ipairs( rabbit_colors ) do
 	hp_max = 2,
 	collisionbox = {-0.2, -0.01, -0.2, 0.2, 0.4, 0.2},
 	visual = "mesh",
-	mesh = "mobs_rabbit.x",
+	mesh = "rabbit_bigger_jumps-mobs.x",
 	visual_size = {x=0.5, y=0.5},
 	textures = {"mobs_rabbit_"..v..".png"},
 	makes_footstep_sound = false,
@@ -504,11 +504,16 @@ mobs:register_mob("mobs:donkey", {
 
 	animation = {
 		speed_normal = 15,
-		stand_start = 0,
-		stand_end = 30,
+		stand_start = 1,
+		stand_end = 40,
 		walk_start = 40,
 		walk_end = 60,
+		run_start = 45,
+		run_end = 85,
 	},
+--frames:  1-40 standing (without backpack) , 45-85 running (without backpack) , 90-130 standing (empty backpack) , 135-175 running (empty backpack) , 180-220 
+--                   standing (full backpack) , 225-265 running (full backpack)
+
 	
 	on_rightclick = function(self, clicker)
 		if clicker:is_player() and clicker:get_inventory() then
@@ -519,4 +524,168 @@ mobs:register_mob("mobs:donkey", {
    })
    mobs:register_spawn("mobs:donkey", {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
 
+
+mobs:register_mob("mobs:donkey_backpack_empty", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_donkey.x",
+	visual_size = {x=2.0, y=2.5},
+	textures = {"mobs_donkey.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 15,
+		stand_start = 90,
+		stand_end = 130,
+		walk_start = 135,
+		walk_end = 175,
+	},
+--frames:  1-40 standing (without backpack) , 45-85 running (without backpack) , 90-130 standing (empty backpack) , 135-175 running (empty backpack) , 180-220 
+--                   standing (full backpack) , 225-265 running (full backpack)
+
+	
+	on_rightclick = function(self, clicker)
+		if clicker:is_player() and clicker:get_inventory() then
+			clicker:get_inventory():add_item("main", "mobs:donkey_backpack_empty")
+			self.object:remove()
+		end
+	end,
+   })
+
+
+mobs:register_mob("mobs:donkey_backpack_full", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_donkey.x",
+	visual_size = {x=2.0, y=2.5},
+	textures = {"mobs_donkey.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 15,
+		stand_start = 180,
+		stand_end = 220,
+		walk_start = 225,
+		walk_end = 165,
+	},
+--frames:  1-40 standing (without backpack) , 45-85 running (without backpack) , 90-130 standing (empty backpack) , 135-175 running (empty backpack) , 180-220 
+--                   standing (full backpack) , 225-265 running (full backpack)
+
+	
+	on_rightclick = function(self, clicker)
+		if clicker:is_player() and clicker:get_inventory() then
+			clicker:get_inventory():add_item("main", "mobs:donkey_backpack_full")
+			self.object:remove()
+		end
+	end,
+   })
+
+
+
+mobs:register_mob("mobs:swan", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_swan.x",
+	visual_size = {x=2.0, y=2.5},
+	textures = {"mobs_swan.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 15,
+		stand_start = 1,
+		stand_end = 80,
+		walk_start = 1,
+		walk_end = 80,
+	},
+   })
+
+
+
+mobs:register_mob("mobs:turtle", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_turtle.x",
+	visual_size = {x=1.5, y=1.5},
+	textures = {"mobs_turtle.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 5,
+		stand_start = 1,
+		stand_end = 50,
+		walk_start = 60,
+		walk_end = 90,
+
+		punch_start = 95,
+		punch_end = 100,
+	},
+   })
+
+
+
+mobs:register_mob("mobs:turtle_hidden", {
+	type = "animal",
+	hp_max = 2,
+	collisionbox = {-0.7, -0.01, -0.4, 0.7, 1.4, 0.4},
+	visual = "mesh",
+	mesh = "mobs_turtle.x",
+	visual_size = {x=1.0, y=1.0},
+	textures = {"mobs_turtle.png"},
+	makes_footstep_sound = false,
+	walk_velocity = 1,
+	armor = 200,
+	drops = {},
+	drawtype = "front",
+	water_damage = 0,
+	lava_damage = 1,
+	light_damage = 0,
+
+	animation = {
+		speed_normal = 0,
+		stand_start = 95,
+		stand_end = 100,
+		walk_start = 60,
+		walk_end = 90,
+	},
+   })
+
+
+--turtle: 1-50 - doing nothing , 60-90 running , 95-100 hidden , 105-135 swimming
+---<AspireMint> swan: 1-80 doing nothing ..(not finished)
 
