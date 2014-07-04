@@ -1,6 +1,6 @@
-mobs = {}
+mobapi = {}
 
-mobs.default_definition = {
+mobapi.default_definition = {
 	physical = true,
 	jump = function (self)
 		local v = self.object:getvelocity()
@@ -449,18 +449,18 @@ mobs.default_definition = {
 	end,
 
 	__index = function(table,key)
-		return mobs.default_definition[key]
+		return mobapi.default_definition[key]
 	end,}
 
-function mobs:register_mob(name, def)
-	setmetatable (def,mobs.default_definition)
+function mobapi:register_mob(name, def)
+	setmetatable (def,mobapi.default_definition)
 	minetest.register_entity(name, def)
 end
 
-mobs.spawning_mobs = {}
-function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
+mobapi.spawning_mobs = {}
+function mobapi:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
 	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") ~= false then
-		mobs.spawning_mobs[name] = true
+		mobapi.spawning_mobs[name] = true
 		minetest.register_abm({
 			nodenames = nodes,
 			neighbors = {"air"},
@@ -470,7 +470,7 @@ function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_o
 				if active_object_count_wider > active_object_count then
 					return
 				end
-				if not mobs.spawning_mobs[name] then
+				if not mobapi.spawning_mobs[name] then
 					return
 				end
 				pos.y = pos.y+1
@@ -498,7 +498,7 @@ function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_o
 				end
 				
 				if minetest.setting_getbool("display_mob_spawn") then
-					minetest.chat_send_all("[mobs] Add "..name.." at "..minetest.pos_to_string(pos))
+					minetest.chat_send_all("[mobapi] Add "..name.." at "..minetest.pos_to_string(pos))
 				end
 				minetest.env:add_entity(pos, name)
 			end
@@ -506,7 +506,7 @@ function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_o
 	end
 end
 
-function mobs:register_arrow(name, def)
+function mobapi:register_arrow(name, def)
 	minetest.register_entity(name, {
 		physical = false,
 		visual = def.visual,
