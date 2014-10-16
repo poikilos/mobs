@@ -184,6 +184,15 @@ mobapi.default_definition = {
 					self.object:remove()
 				end
 			end
+			
+			if self.air_damage and self.air_damage ~= 0 and
+				n.name == "air"
+			then
+				self.object:set_hp(self.object:get_hp()-self.air_damage)
+				if self.object:get_hp() == 0 then
+					self.object:remove()
+				end
+			end
 		end
 		
 		self.env_damage_timer = self.env_damage_timer + dtime
@@ -459,12 +468,12 @@ function mobapi:register_mob(name, def)
 end
 
 mobapi.spawning_mobs = {}
-function mobapi:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
+function mobapi:register_spawn(name, nodes, neighbors, max_light, min_light, chance, active_object_count, max_height, spawn_func)
 	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") ~= false then
 		mobapi.spawning_mobs[name] = true
 		minetest.register_abm({
 			nodenames = nodes,
-			neighbors = {"air"},
+			neighbors = neighbors,
 			interval = 30,
 			chance = chance,
 			action = function(pos, node, _, active_object_count_wider)
