@@ -24,6 +24,7 @@ function mobapi:register_mob(name, def)
 		armor = def.armor,
 		drawtype = def.drawtype,
 		on_rightclick = def.on_rightclick,
+		on_eat = def.on_eat or nil,
 		type = def.type,
 		attack_type = def.attack_type,
 		arrow = def.arrow,
@@ -168,6 +169,18 @@ function mobapi:register_mob(name, def)
 					)
 					self.animation.current = "punch"
 				end
+			elseif type == "eat" and self.animation.current ~= "eat"  then
+				if
+					self.animation.eat_start
+					and self.animation.eat_end
+					and self.animation.speed_normal
+				then
+					self.object:set_animation(
+						{x=self.animation.eat_start,y=self.animation.eat_end},
+						self.animation.speed_normal, 0
+					)
+					self.animation.current = "eat"
+				end
 			end
 		end,
 		
@@ -245,6 +258,10 @@ function mobapi:register_mob(name, def)
 					return
 				end
 				self.timer = 0
+			end
+			
+			if self.on_eat then
+				self.on_eat(self)
 			end
 			
 			if self.sounds and self.sounds.random and math.random(1, 100) <= 1 then
