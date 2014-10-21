@@ -1,26 +1,26 @@
-=== MOB API for MINETEST ===
-by PilzAdam, ElectricSolstice
+# MOB API for MINETEST
+by PilzAdam, ElectricSolstice, CasimirKaPazi, TenPlus1
 
-Inroduction:
+## Introduction:
 This mod adds a basic api for mods to add mobs into the game.
 
-How to install:
+## How to install:
 Unzip the archive an place it in minetest-base-directory/mods/
 if you have a windows client or a linux run-in-place client. If you have
 a linux system-wide instalation place it in ~/.minetest/mods/.
 For further information or help see:
 http://wiki.minetest.com/wiki/Installing_Mods
 
-How to use the mod:
+## How to use the mod:
 See https://github.com/PilzAdam/mobs/wiki
 
-For developers:
+## For developers:
 The API documentation is moved to https://github.com/PilzAdam/mobs/wiki/API
 
-License:
+## License:
 Sourcecode: WTFPL (see below)
 
-See also:
+## See also:
 http://minetest.net/
 
          DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
