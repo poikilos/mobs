@@ -25,6 +25,7 @@ function mobapi:register_mob(name, def)
 		drawtype = def.drawtype,
 		on_rightclick = def.on_rightclick,
 		on_eat = def.on_eat or nil,
+		on_death = def.on_death or nil,
 		type = def.type,
 		attack_type = def.attack_type,
 		arrow = def.arrow,
@@ -184,6 +185,72 @@ function mobapi:register_mob(name, def)
 			end
 		end,
 		
+		on_death = function(self)
+			if self.sounds.death ~= nil then
+				minetest.sound_play(self.sounds.death,{
+					object = self.object,
+				})
+			end
+			
+			-- drop on all death causes!
+			-- if hitter and hitter:is_player() and hitter:get_inventory() then
+			for _,drop in ipairs(self.drops) do
+				if math.random(1, drop.chance) == 1 then
+					local d = ItemStack(drop.name.." "..math.random(drop.min, drop.max))
+--					default.drop_item(pos,d)
+					local pos = self.object:getpos()
+					pos.y = pos.y + 0.5 -- drop items half block higher
+					minetest.add_item(pos,d)
+				end
+			end
+
+--				if minetest.get_modpath("skills") and minetest.get_modpath("experience") then
+--					-- DROP experience
+--					local distance_rating = ( ( get_distance({x=0,y=0,z=0},pos) ) / ( skills.get_player_level(hitter:get_player_name()).level * 1000 ) )
+--					local emax = math.floor( self.exp_min + ( distance_rating * self.exp_max ) )
+--					local expGained = math.random(self.exp_min, emax)
+--					skills.add_exp(hitter:get_player_name(),expGained)
+--					local expStack = experience.exp_to_items(expGained)
+--					for _,stack in ipairs(expStack) do
+--						default.drop_item(pos,stack)
+--					end
+--				end
+
+--				-- see if there are any NPCs to shower you with rewards
+--				if self.type ~= "npc" then
+--					local inradius = minetest.get_objects_inside_radius(hitter:getpos(),10)
+--					for _, oir in pairs(inradius) do
+--						local obj = oir:get_luaentity()
+--						if obj then	
+--							if obj.type == "npc" and obj.rewards ~= nil then
+--								local yaw = nil
+--								local lp = hitter:getpos()
+--								local s = obj.object:getpos()
+--								local vec = {x=lp.x-s.x, y=1, z=lp.z-s.z}
+--								yaw = math.atan(vec.z/vec.x)+math.pi/2
+--								if self.drawtype == "side" then
+--									yaw = yaw+(math.pi/2)
+--								end
+--								if lp.x > s.x then
+--									yaw = yaw+math.pi
+--								end
+--								obj.object:setyaw(yaw)
+--								local x = math.sin(yaw) * -2
+--								local z = math.cos(yaw) * 2
+--								acc = {x=x, y=-5, z=z}
+--								for _, r in pairs(obj.rewards) do
+--									if math.random(0,100) < r.chance then
+--										default.drop_item(obj.object:getpos(),r.item, vec, acc)
+--									end
+--								end
+--							end
+--						end
+--					end
+--				end
+				
+			self.object:remove()
+		end,
+		
 		on_step = function(self, dtime)
 			
 			if self.type == "monster" and minetest.setting_getbool("only_peaceful_mobs") then
@@ -235,7 +302,7 @@ function mobapi:register_mob(name, def)
 						local damage = d-5
 						self.object:set_hp(self.object:get_hp()-damage)
 						if self.object:get_hp() == 0 then
-							self.object:remove()
+							self:on_death()
 						end
 					end
 					self.old_y = self.object:getpos().y
@@ -280,8 +347,9 @@ function mobapi:register_mob(name, def)
 					and minetest.get_timeofday() < 0.8
 				then
 					self.object:set_hp(self.object:get_hp()-self.light_damage)
+					self:show_blood()
 					if self.object:get_hp() == 0 then
-						self.object:remove()
+						self:on_death()
 					end
 				end
 				
@@ -290,7 +358,7 @@ function mobapi:register_mob(name, def)
 				then
 					self.object:set_hp(self.object:get_hp()-self.water_damage)
 					if self.object:get_hp() == 0 then
-						self.object:remove()
+						self:on_death()
 					end
 				end
 				
@@ -299,7 +367,7 @@ function mobapi:register_mob(name, def)
 				then
 					self.object:set_hp(self.object:get_hp()-self.lava_damage)
 					if self.object:get_hp() == 0 then
-						self.object:remove()
+						self:on_death()
 					end
 				end
 			end
@@ -643,80 +711,11 @@ function mobapi:register_mob(name, def)
 			}
 			return minetest.serialize(tmp)
 		end,
-
-		on_punch = function(self, hitter, tflp, tool_capabilities, dir)
-
-			process_weapon(hitter,tflp,tool_capabilities)
-
-			local pos = self.object:getpos()
-			if self.object:get_hp() <= 0 then
-				if hitter and hitter:is_player() and hitter:get_inventory() then
-					for _,drop in ipairs(self.drops) do
-						if math.random(1, drop.chance) == 1 then
-							local d = ItemStack(drop.name.." "..math.random(drop.min, drop.max))
---							default.drop_item(pos,d)
-							local pos2 = pos
-							pos2.y = pos2.y + 0.5 -- drop items half block higher
-							minetest.add_item(pos2,d)
-						end
-					end
-					
---					if self.sounds.death ~= nil then
---						minetest.sound_play(self.sounds.death,{
---							object = self.object,
---						})
---					end
---					if minetest.get_modpath("skills") and minetest.get_modpath("experience") then
---						-- DROP experience
---						local distance_rating = ( ( get_distance({x=0,y=0,z=0},pos) ) / ( skills.get_player_level(hitter:get_player_name()).level * 1000 ) )
---						local emax = math.floor( self.exp_min + ( distance_rating * self.exp_max ) )
---						local expGained = math.random(self.exp_min, emax)
---						skills.add_exp(hitter:get_player_name(),expGained)
---						local expStack = experience.exp_to_items(expGained)
---						for _,stack in ipairs(expStack) do
---							default.drop_item(pos,stack)
---						end
---					end
-
---					-- see if there are any NPCs to shower you with rewards
---					if self.type ~= "npc" then
---						local inradius = minetest.get_objects_inside_radius(hitter:getpos(),10)
---						for _, oir in pairs(inradius) do
---							local obj = oir:get_luaentity()
---							if obj then	
---								if obj.type == "npc" and obj.rewards ~= nil then
---									local yaw = nil
---									local lp = hitter:getpos()
---									local s = obj.object:getpos()
---									local vec = {x=lp.x-s.x, y=1, z=lp.z-s.z}
---									yaw = math.atan(vec.z/vec.x)+math.pi/2
---									if self.drawtype == "side" then
---										yaw = yaw+(math.pi/2)
---									end
---									if lp.x > s.x then
---										yaw = yaw+math.pi
---									end
---									obj.object:setyaw(yaw)
---									local x = math.sin(yaw) * -2
---									local z = math.cos(yaw) * 2
---									acc = {x=x, y=-5, z=z}
---									for _, r in pairs(obj.rewards) do
---										if math.random(0,100) < r.chance then
---											default.drop_item(obj.object:getpos(),r.item, vec, acc)
---										end
---									end
---								end
---							end
---						end
---					end
-					
-				end
-			end
-
-			--blood_particles
-
-			if self.blood_amount > 0 and pos then
-				local p = pos
+		
+		
+		show_blood = function(self)
+			local p = self.object:getpos()
+			if self.blood_amount > 0 and p then
 				p.y = p.y + self.blood_offset
 
 				minetest.add_particlespawner(
@@ -736,6 +735,48 @@ function mobapi:register_mob(name, def)
 					self.blood_texture --texture
 				)
 			end
+		end,
+
+		on_punch = function(self, hitter, tflp, tool_capabilities, dir)
+
+			process_weapon(hitter,tflp,tool_capabilities)
+			
+			if self.sounds.hit ~= nil then
+				minetest.sound_play(self.sounds.hit, {
+					object = self.object,
+				})
+			end
+
+			local pos = self.object:getpos()
+			if self.object:get_hp() <= 0 then
+				self:on_death()
+			end
+
+			--blood_particles
+			
+			self:show_blood()
+
+--[[			if self.blood_amount > 0 and pos then
+				local p = pos
+				p.y = p.y + self.blood_offset
+
+				minetest.add_particlespawner(
+					5, --blood_amount, --amount
+					0.25, --time
+					{x=p.x-0.2, y=p.y-0.2, z=p.z-0.2}, --minpos
+					{x=p.x+0.2, y=p.y+0.2, z=p.z+0.2}, --maxpos
+					{x=0, y=-2, z=0}, --minvel
+					{x=2, y=2, z=2}, --maxvel
+					{x=-4,y=-4,z=-4}, --minacc
+					{x=4,y=-4,z=4}, --maxacc
+					0.1, --minexptime
+					1, --maxexptime
+					0.5, --minsize
+					1, --maxsize
+					false, --collisiondetection
+					self.blood_texture --texture
+				)
+]]--			end
 
 			-- knock back effect, adapted from blockmen's pyramids mod
 			-- https://github.com/BlockMen/pyramids
