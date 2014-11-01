@@ -195,8 +195,8 @@ mobapi.default_definition = {
 		end
 		
 		if self.type == "monster" and minetest.setting_getbool("enable_damage") then
+			local s = self.object:getpos()
 			for _,player in pairs(minetest.get_connected_players()) do
-				local s = self.object:getpos()
 				local p = player:getpos()
 				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
 				if dist < self.view_range then
@@ -211,6 +211,15 @@ mobapi.default_definition = {
 						self.attack.dist = dist
 					end
 				end
+			end
+			if self.attack.player then
+				local p = self.attack.player:getpos()
+				if not minetest.line_of_sight(s, p) then
+					self.state = "stand"
+					self.attack.player = nil
+					self.attack.dist = nil
+				end
+				if minetest.line_of_sight(s, p) then print("true") else print("false") end
 			end
 		end
 		
@@ -460,51 +469,31 @@ end
 
 mobapi.spawning_mobs = {}
 function mobapi:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
-	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") ~= false then
-		mobapi.spawning_mobs[name] = true
-		minetest.register_abm({
-			nodenames = nodes,
-			neighbors = {"air"},
-			interval = 30,
-			chance = chance,
-			action = function(pos, node, _, active_object_count_wider)
-				if active_object_count_wider > active_object_count then
-					return
-				end
-				if not mobapi.spawning_mobs[name] then
-					return
-				end
-				pos.y = pos.y+1
-				if not minetest.env:get_node_light(pos) then
-					return
-				end
-				if minetest.env:get_node_light(pos) > max_light then
-					return
-				end
-				if minetest.env:get_node_light(pos) < min_light then
-					return
-				end
-				if pos.y > max_height then
-					return
-				end
-				if minetest.env:get_node(pos).name ~= "air" then
-					return
-				end
-				pos.y = pos.y+1
-				if minetest.env:get_node(pos).name ~= "air" then
-					return
-				end
-				if spawn_func and not spawn_func(pos, node) then
-					return
-				end
-				
-				if minetest.setting_getbool("display_mob_spawn") then
-					minetest.chat_send_all("[mobapi] Add "..name.." at "..minetest.pos_to_string(pos))
-				end
-				minetest.env:add_entity(pos, name)
+	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") == true then return end
+	mobapi.spawning_mobs[name] = true
+	minetest.register_abm({
+		nodenames = nodes,
+		neighbors = {"air"},
+		interval = 30,
+		chance = chance,
+		action = function(pos, node, _, active_object_count_wider)
+			if active_object_count_wider > active_object_count then return end
+			if not mobapi.spawning_mobs[name] then return end
+			pos.y = pos.y+1
+			if not minetest.env:get_node_light(pos) then return end
+			if minetest.env:get_node_light(pos) > max_light then return end
+			if minetest.env:get_node_light(pos) < min_light then return end
+			if pos.y > max_height then return end
+			if minetest.env:get_node(pos).name ~= "air" then return end
+			pos.y = pos.y+1
+			if minetest.env:get_node(pos).name ~= "air" then return end
+			if spawn_func and not spawn_func(pos, node) then return end
+			if minetest.setting_getbool("display_mob_spawn") then
+				minetest.chat_send_all("[mobapi] Add "..name.." at "..minetest.pos_to_string(pos))
 			end
-		})
-	end
+			minetest.env:add_entity(pos, name)
+		end
+	})
 end
 
 function mobapi:register_arrow(name, def)
