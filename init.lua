@@ -214,12 +214,11 @@ mobapi.default_definition = {
 			end
 			if self.attack.player then
 				local p = self.attack.player:getpos()
-				if not minetest.line_of_sight(s, p) then
+				if not minetest.line_of_sight({x=s.x, y=s.y+1, z=s.z}, p) then
 					self.state = "stand"
 					self.attack.player = nil
 					self.attack.dist = nil
 				end
-				if minetest.line_of_sight(s, p) then print("true") else print("false") end
 			end
 		end
 		
