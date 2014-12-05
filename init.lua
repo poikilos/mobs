@@ -214,7 +214,7 @@ mobapi.default_definition = {
 			end
 			if self.attack.player then
 				local p = self.attack.player:getpos()
-				if not minetest.line_of_sight({x=s.x, y=s.y+1, z=s.z}, p) then
+				if not p or not s or not minetest.line_of_sight({x=s.x, y=s.y+1, z=s.z}, {x=p.x, y=p.y+1, z=p.z}) then
 					self.state = "stand"
 					self.attack = {player = nil, dist = nil}
 				end
@@ -445,12 +445,11 @@ mobapi.default_definition = {
 	
 	on_punch = function(self, hitter, time_from_last_punch, tool_capabilities)
 		-- drop items
-		if self.object:get_hp() <= 0 then
-			if hitter and hitter:is_player() and hitter:get_inventory() then
-				for _,drop in ipairs(self.drops) do
-					if math.random(1, drop.chance) == 1 then
+		if self.object:get_hp() > 0 then return end
+		if hitter and hitter:is_player() and hitter:get_inventory() then
+			for _,drop in ipairs(self.drops) do
+				if math.random(1, drop.chance) == 1 then
 						hitter:get_inventory():add_item("main", ItemStack(drop.name.." "..math.random(drop.min, drop.max)))
-					end
 				end
 			end
 		end
