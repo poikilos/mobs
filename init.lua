@@ -263,7 +263,7 @@ mobs:register_mob("mobs:pig", {
 	lava_damage = 5,
 	light_damage = 0,
 	sounds = {
-		random = "mobs_sheep",
+		random = "mobs_pig",
 	},
 	animation = {
 		speed_normal = 15,
@@ -272,7 +272,7 @@ mobs:register_mob("mobs:pig", {
 		walk_start = 81,
 		walk_end = 100,
 	},
-	follow = "farming:wheat",
+	follow = "default:apple",
 	view_range = 5,
 	
 	on_rightclick = function(self, clicker)
