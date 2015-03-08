@@ -129,8 +129,14 @@ mobapi.default_definition = {
 				local d = self.old_y - self.object:getpos().y
 				if d > 5 then
 					local damage = d-5
+					if self.sounds and self.sounds.damage_fall then
+						minetest.sound_play(self.sounds.damage_fall, {object = self.object})
+					end
 					self.object:set_hp(self.object:get_hp()-damage)
 					if self.object:get_hp() == 0 then
+						if self.sounds and self.sounds.die then
+							minetest.sound_play(self.sounds.die, {object = self.object})
+						end
 						self.object:remove()
 					end
 				end
@@ -162,7 +168,13 @@ mobapi.default_definition = {
 				and minetest.get_timeofday() < 0.8
 			then
 				self.object:set_hp(self.object:get_hp()-self.light_damage)
+				if self.sounds and self.sounds.damage_light then
+					minetest.sound_play(self.sounds.damage_light, {object = self.object})
+				end
 				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
 					self.object:remove()
 				end
 			end
@@ -171,7 +183,13 @@ mobapi.default_definition = {
 				minetest.get_item_group(n.name, "water") ~= 0
 			then
 				self.object:set_hp(self.object:get_hp()-self.water_damage)
+				if self.sounds and self.sounds.damage_water then
+					minetest.sound_play(self.sounds.damage_water, {object = self.object})
+				end
 				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
 					self.object:remove()
 				end
 			end
@@ -180,7 +198,13 @@ mobapi.default_definition = {
 				minetest.get_item_group(n.name, "lava") ~= 0
 			then
 				self.object:set_hp(self.object:get_hp()-self.lava_damage)
+				if self.sounds and self.sounds.damage_lava then
+					minetest.sound_play(self.sounds.damage_lava, {object = self.object})
+				end
 				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
 					self.object:remove()
 				end
 			end
@@ -445,7 +469,15 @@ mobapi.default_definition = {
 	
 	on_punch = function(self, hitter, time_from_last_punch, tool_capabilities)
 		-- drop items
-		if self.object:get_hp() > 0 then return end
+		if self.object:get_hp() > 0 then
+			if self.sounds and self.sounds.damage_punch then
+				minetest.sound_play(self.sounds.damage_punch, {object = self.object})
+			end
+			return
+		end
+		if self.sounds and self.sounds.die then
+			minetest.sound_play(self.sounds.die, {object = self.object})
+		end
 		if hitter and hitter:is_player() and hitter:get_inventory() then
 			for _,drop in ipairs(self.drops) do
 				if math.random(1, drop.chance) == 1 then
