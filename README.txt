@@ -11,11 +11,8 @@ a linux system-wide instalation place it in ~/.minetest/mods/.
 For further information or help see:
 http://wiki.minetest.com/wiki/Installing_Mods
 
-How to use the mod:
-See https://github.com/PilzAdam/mobs/wiki
-
-For developers:
-The API documentation is moved to https://github.com/PilzAdam/mobs/wiki/API
+Minetest's damage system:
+The damage system in Minetest is more complex than just hold down the left mouse button. After the first punch your hand or weapon has a "reload" time. This is for most weapons 1 second. After the reload time the player can punch again.
 
 License:
 Sourcecode: WTFPL (see below)
