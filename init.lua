@@ -491,13 +491,13 @@ mobapi.default_definition = {
 		return mobapi.default_definition[key]
 	end,}
 
-function mobapi:register_mob(name, def)
+function mobapi.register_mob(name, def)
 	setmetatable (def,mobapi.default_definition)
 	minetest.register_entity(name, def)
 end
 
 mobapi.spawning_mobs = {}
-function mobapi:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
+function mobapi.register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
 	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") == true then return end
 	mobapi.spawning_mobs[name] = true
 	minetest.register_abm({
@@ -525,7 +525,7 @@ function mobapi:register_spawn(name, nodes, max_light, min_light, chance, active
 	})
 end
 
-function mobapi:register_arrow(name, def)
+function mobapi.register_arrow(name, def)
 	minetest.register_entity(name, {
 		physical = false,
 		visual = def.visual,
