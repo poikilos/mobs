@@ -8,7 +8,6 @@ mobapi.default_definition = {
 		self.object:setvelocity(v)
 	end,
 
-	
 	timer = 0,
 	env_damage_timer = 0, -- only if state = "attack"
 	attack = {player=nil, dist=nil},
@@ -95,7 +94,8 @@ mobapi.default_definition = {
 		if self.type == "monster" and minetest.setting_getbool("only_peaceful_mobs") then
 			self.object:remove()
 		end
-		
+
+		-- Lifetime over and no player around -> remove
 		self.lifetimer = self.lifetimer - dtime
 		if self.lifetimer <= 0 and not self.tamed then
 			local player_count = 0
@@ -109,7 +109,8 @@ mobapi.default_definition = {
 				return
 			end
 		end
-		
+
+		-- Moving upwards -> make it fall
 		if self.object:getvelocity().y > 0.1 then
 			local yaw = self.object:getyaw()
 			if self.drawtype == "side" then
@@ -121,7 +122,8 @@ mobapi.default_definition = {
 		else
 			self.object:setacceleration({x=0, y=-10, z=0})
 		end
-		
+
+		-- Fall damage
 		if self.disable_fall_damage and self.object:getvelocity().y == 0 then
 			if not self.old_y then
 				self.old_y = self.object:getpos().y
@@ -151,11 +153,13 @@ mobapi.default_definition = {
 			end
 			self.timer = 0
 		end
-		
+
+		-- Play a sound at random
 		if self.sounds and self.sounds.random and math.random(1, 100) <= 1 then
 			minetest.sound_play(self.sounds.random, {object = self.object})
 		end
-		
+
+		-- Environmental damage
 		local do_env_damage = function(self)
 			local pos = self.object:getpos()
 			local n = minetest.get_node(pos)
@@ -492,7 +496,7 @@ mobapi.default_definition = {
 	end,}
 
 function mobapi.register_mob(name, def)
-	setmetatable (def,mobapi.default_definition)
+	setmetatable (def, mobapi.default_definition)
 	minetest.register_entity(name, def)
 end
 
