@@ -201,7 +201,7 @@ mobs:register_mob("mobs:sheep", {
 	},
 	follow = "farming:wheat",
 	view_range = 5,
-	
+
 	on_rightclick = function(self, clicker)
 		local item = clicker:get_wielded_item()
 		if item:get_name() == "farming:wheat" then
@@ -275,7 +275,7 @@ mobs:register_mob("mobs:rat", {
 	water_damage = 0,
 	lava_damage = 1,
 	light_damage = 0,
-	
+
 	on_rightclick = function(self, clicker)
 		if clicker:is_player() and clicker:get_inventory() then
 			clicker:get_inventory():add_item("main", "mobs:rat")
@@ -288,7 +288,7 @@ mobs:register_spawn("mobs:rat", {"default:dirt_with_grass", "default:stone"}, 20
 minetest.register_craftitem("mobs:rat", {
 	description = "Rat",
 	inventory_image = "mobs_rat_inventory.png",
-	
+
 	on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.above then
 			minetest.env:add_entity(pointed_thing.above, "mobs:rat")
@@ -297,11 +297,11 @@ minetest.register_craftitem("mobs:rat", {
 		return itemstack
 	end,
 })
-	
+
 minetest.register_craftitem("mobs:rat_cooked", {
 	description = "Cooked Rat",
 	inventory_image = "mobs_cooked_rat.png",
-	
+
 	on_use = minetest.item_eat(3),
 })
 
@@ -376,9 +376,9 @@ mobs:register_mob("mobs:dungeon_master", {
 	attack_type = "shoot",
 	arrow = "mobs:fireball",
 	shoot_interval = 2.5,
-	sounds = {
+	--[[sounds = {
 		attack = "mobs_fireball",
-	},
+	},--]]
 	animation = {
 		stand_start = 0,
 		stand_end = 19,
