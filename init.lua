@@ -1,445 +1,561 @@
-dofile(minetest.get_modpath("mobs").."/api.lua")
+mobapi = {}
 
-mobs:register_mob("mobs:dirt_monster", {
-	type = "monster",
-	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_stone_monster.x",
-	textures = {"mobs_dirt_monster.png"},
-	visual_size = {x=3, y=2.6},
-	makes_footstep_sound = true,
-	view_range = 15,
-	walk_velocity = 1,
-	run_velocity = 3,
-	damage = 2,
-	drops = {
-		{name = "default:dirt",
-		chance = 1,
-		min = 3,
-		max = 5,},
-	},
-	armor = 100,
-	drawtype = "front",
-	water_damage = 1,
-	lava_damage = 5,
-	light_damage = 2,
-	on_rightclick = nil,
-	attack_type = "dogfight",
-	animation = {
-		speed_normal = 15,
-		speed_run = 15,
-		stand_start = 0,
-		stand_end = 14,
-		walk_start = 15,
-		walk_end = 38,
-		run_start = 40,
-		run_end = 63,
-		punch_start = 40,
-		punch_end = 63,
-	}
-})
-mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass"}, 3, -1, 7000, 3, 31000)
+mobapi.default_definition = {
+	physical = true,
+	jump = function (self)
+		local v = self.object:getvelocity()
+		v.y = 5
+		self.object:setvelocity(v)
+	end,
 
-mobs:register_mob("mobs:stone_monster", {
-	type = "monster",
-	hp_max = 10,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_stone_monster.x",
-	textures = {"mobs_stone_monster.png"},
-	visual_size = {x=3, y=2.6},
-	makes_footstep_sound = true,
-	view_range = 10,
-	walk_velocity = 0.5,
-	run_velocity = 2,
-	damage = 3,
-	drops = {
-		{name = "default:mossycobble",
-		chance = 1,
-		min = 3,
-		max = 5,},
-	},
-	light_resistant = true,
-	armor = 80,
-	drawtype = "front",
-	water_damage = 0,
-	lava_damage = 0,
-	light_damage = 0,
-	attack_type = "dogfight",
-	animation = {
-		speed_normal = 15,
-		speed_run = 15,
-		stand_start = 0,
-		stand_end = 14,
-		walk_start = 15,
-		walk_end = 38,
-		run_start = 40,
-		run_end = 63,
-		punch_start = 40,
-		punch_end = 63,
-	}
-})
-mobs:register_spawn("mobs:stone_monster", {"default:stone"}, 3, -1, 7000, 3, 0)
-
-mobs:register_mob("mobs:sand_monster", {
-	type = "monster",
-	hp_max = 3,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_sand_monster.x",
-	textures = {"mobs_sand_monster.png"},
-	visual_size = {x=8,y=8},
-	makes_footstep_sound = true,
-	view_range = 15,
-	walk_velocity = 1.5,
-	run_velocity = 4,
-	damage = 1,
-	drops = {
-		{name = "default:sand",
-		chance = 1,
-		min = 3,
-		max = 5,},
-	},
-	light_resistant = true,
-	armor = 100,
-	drawtype = "front",
-	water_damage = 3,
-	lava_damage = 1,
-	light_damage = 0,
-	attack_type = "dogfight",
-	animation = {
-		speed_normal = 15,
-		speed_run = 15,
-		stand_start = 0,
-		stand_end = 39,
-		walk_start = 41,
-		walk_end = 72,
-		run_start = 74,
-		run_end = 105,
-		punch_start = 74,
-		punch_end = 105,
-	},
-})
-mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, -1, 7000, 3, 31000)
-
-mobs:register_mob("mobs:tree_monster", {
-	type = "monster",
-	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_tree_monster.x",
-	textures = {"mobs_tree_monster.png"},
-	visual_size = {x=4.5,y=4.5},
-	makes_footstep_sound = true,
-	view_range = 15,
-	walk_velocity = 1,
-	run_velocity = 3,
-	damage = 2,
-	drops = {
-		{name = "default:sapling",
-		chance = 3,
-		min = 1,
-		max = 2,},
-		{name = "default:junglesapling",
-		chance = 3,
-		min = 1,
-		max = 2,},
-	},
-	light_resistant = true,
-	armor = 100,
-	drawtype = "front",
-	water_damage = 1,
-	lava_damage = 5,
-	light_damage = 2,
-	disable_fall_damage = true,
-	attack_type = "dogfight",
-	animation = {
-		speed_normal = 15,
-		speed_run = 15,
-		stand_start = 0,
-		stand_end = 24,
-		walk_start = 25,
-		walk_end = 47,
-		run_start = 48,
-		run_end = 62,
-		punch_start = 48,
-		punch_end = 62,
-	},
-})
-mobs:register_spawn("mobs:tree_monster", {"default:leaves", "default:jungleleaves"}, 3, -1, 7000, 3, 31000)
-
-mobs:register_mob("mobs:sheep", {
-	type = "animal",
-	hp_max = 5,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
-	textures = {"mobs_sheep.png"},
-	visual = "mesh",
-	mesh = "mobs_sheep.x",
-	makes_footstep_sound = true,
-	walk_velocity = 1,
-	armor = 200,
-	drops = {
-		{name = "mobs:meat_raw",
-		chance = 1,
-		min = 2,
-		max = 3,},
-	},
-	drawtype = "front",
-	water_damage = 1,
-	lava_damage = 5,
-	light_damage = 0,
-	sounds = {
-		random = "mobs_sheep",
-	},
-	animation = {
-		speed_normal = 15,
-		stand_start = 0,
-		stand_end = 80,
-		walk_start = 81,
-		walk_end = 100,
-	},
-	follow = "farming:wheat",
-	view_range = 5,
+	timer = 0,
+	env_damage_timer = 0, -- only if state = "attack"
+	attack = {player=nil, dist=nil},
+	state = "stand",
+	v_start = false,
+	old_y = nil,
+	lifetimer = 600,
+	tamed = false,
 	
-	on_rightclick = function(self, clicker)
-		local item = clicker:get_wielded_item()
-		if item:get_name() == "farming:wheat" then
-			if not self.tamed then
-				if not minetest.setting_getbool("creative_mode") then
-					item:take_item()
-					clicker:set_wielded_item(item)
-				end
-				self.tamed = true
-			elseif self.naked then
-				if not minetest.setting_getbool("creative_mode") then
-					item:take_item()
-					clicker:set_wielded_item(item)
-				end
-				self.food = (self.food or 0) + 1
-				if self.food >= 8 then
-					self.food = 0
-					self.naked = false
-					self.object:set_properties({
-						textures = {"mobs_sheep.png"},
-						mesh = "mobs_sheep.x",
-					})
-				end
-			end
+	set_velocity = function(self, v)
+		local yaw = self.object:getyaw()
+		if self.drawtype == "side" then
+			yaw = yaw+(math.pi/2)
+		end
+		local x = math.sin(yaw) * -v
+		local z = math.cos(yaw) * v
+		self.object:setvelocity({x=x, y=self.object:getvelocity().y, z=z})
+	end,
+	
+	get_velocity = function(self)
+		local v = self.object:getvelocity()
+		return (v.x^2 + v.z^2)^(0.5)
+	end,
+	
+	set_animation = function(self, type)
+		if not self.animation then
 			return
 		end
-		if clicker:get_inventory() and not self.naked then
-			self.naked = true
-			if minetest.registered_items["wool:white"] then
-				clicker:get_inventory():add_item("main", ItemStack("wool:white "..math.random(1,3)))
+		if not self.animation.current then
+			self.animation.current = ""
+		end
+		if type == "stand" and self.animation.current ~= "stand" then
+			if
+				self.animation.stand_start
+				and self.animation.stand_end
+				and self.animation.speed_normal
+			then
+				self.object:set_animation(
+					{x=self.animation.stand_start,y=self.animation.stand_end},
+					self.animation.speed_normal, 0
+				)
+				self.animation.current = "stand"
 			end
-			self.object:set_properties({
-				textures = {"mobs_sheep_shaved.png"},
-				mesh = "mobs_sheep_shaved.x",
-			})
+		elseif type == "walk" and self.animation.current ~= "walk"  then
+			if
+				self.animation.walk_start
+				and self.animation.walk_end
+				and self.animation.speed_normal
+			then
+				self.object:set_animation(
+					{x=self.animation.walk_start,y=self.animation.walk_end},
+					self.animation.speed_normal, 0
+				)
+				self.animation.current = "walk"
+			end
+		elseif type == "run" and self.animation.current ~= "run"  then
+			if
+				self.animation.run_start
+				and self.animation.run_end
+				and self.animation.speed_run
+			then
+				self.object:set_animation(
+					{x=self.animation.run_start,y=self.animation.run_end},
+					self.animation.speed_run, 0
+				)
+				self.animation.current = "run"
+			end
+		elseif type == "punch" and self.animation.current ~= "punch"  then
+			if
+				self.animation.punch_start
+				and self.animation.punch_end
+				and self.animation.speed_normal
+			then
+				self.object:set_animation(
+					{x=self.animation.punch_start,y=self.animation.punch_end},
+					self.animation.speed_normal, 0
+				)
+				self.animation.current = "punch"
+			end
 		end
 	end,
-})
-mobs:register_spawn("mobs:sheep", {"default:dirt_with_grass"}, 20, 8, 9000, 1, 31000)
-
-minetest.register_craftitem("mobs:meat_raw", {
-	description = "Raw Meat",
-	inventory_image = "mobs_meat_raw.png",
-})
-
-minetest.register_craftitem("mobs:meat", {
-	description = "Meat",
-	inventory_image = "mobs_meat.png",
-	on_use = minetest.item_eat(8),
-})
-
-minetest.register_craft({
-	type = "cooking",
-	output = "mobs:meat",
-	recipe = "mobs:meat_raw",
-	cooktime = 5,
-})
-
-mobs:register_mob("mobs:rat", {
-	type = "animal",
-	hp_max = 1,
-	collisionbox = {-0.2, -0.01, -0.2, 0.2, 0.2, 0.2},
-	visual = "mesh",
-	mesh = "mobs_rat.x",
-	textures = {"mobs_rat.png"},
-	makes_footstep_sound = false,
-	walk_velocity = 1,
-	armor = 200,
-	drops = {},
-	drawtype = "front",
-	water_damage = 0,
-	lava_damage = 1,
-	light_damage = 0,
 	
-	on_rightclick = function(self, clicker)
-		if clicker:is_player() and clicker:get_inventory() then
-			clicker:get_inventory():add_item("main", "mobs:rat")
+	on_step = function(self, dtime)
+		if self.type == "monster" and minetest.setting_getbool("only_peaceful_mobs") then
+			self.object:remove()
+		end
+
+		-- Lifetime over and no player around -> remove
+		self.lifetimer = self.lifetimer - dtime
+		if self.lifetimer <= 0 and not self.tamed then
+			local player_count = 0
+			for _,obj in ipairs(minetest.get_objects_inside_radius(self.object:getpos(), 20)) do
+				if obj:is_player() then
+					player_count = player_count+1
+				end
+			end
+			if player_count == 0 and self.state ~= "attack" then
+				self.object:remove()
+				return
+			end
+		end
+
+		-- Moving upwards -> make it fall
+		if self.object:getvelocity().y > 0.1 then
+			local yaw = self.object:getyaw()
+			if self.drawtype == "side" then
+				yaw = yaw+(math.pi/2)
+			end
+			local x = math.sin(yaw) * -2
+			local z = math.cos(yaw) * 2
+			self.object:setacceleration({x=x, y=-10, z=z})
+		else
+			self.object:setacceleration({x=0, y=-10, z=0})
+		end
+
+		-- Fall damage
+		if self.disable_fall_damage and self.object:getvelocity().y == 0 then
+			if not self.old_y then
+				self.old_y = self.object:getpos().y
+			else
+				local d = self.old_y - self.object:getpos().y
+				if d > 5 then
+					local damage = d-5
+					if self.sounds and self.sounds.damage_fall then
+						minetest.sound_play(self.sounds.damage_fall, {object = self.object})
+					end
+					self.object:set_hp(self.object:get_hp()-damage)
+					if self.object:get_hp() == 0 then
+						if self.sounds and self.sounds.die then
+							minetest.sound_play(self.sounds.die, {object = self.object})
+						end
+						self.object:remove()
+					end
+				end
+				self.old_y = self.object:getpos().y
+			end
+		end
+		
+		self.timer = self.timer+dtime
+		if self.state ~= "attack" then
+			if self.timer < 1 then
+				return
+			end
+			self.timer = 0
+		end
+
+		-- Play a sound at random
+		if self.sounds and self.sounds.random and math.random(1, 100) <= 1 then
+			minetest.sound_play(self.sounds.random, {object = self.object})
+		end
+
+		-- Environmental damage
+		local do_env_damage = function(self)
+			local pos = self.object:getpos()
+			local n = minetest.get_node(pos)
+			
+			if self.light_damage and self.light_damage ~= 0
+				and pos.y>0
+				and minetest.get_node_light(pos)
+				and minetest.get_node_light(pos) > 4
+				and minetest.get_timeofday() > 0.2
+				and minetest.get_timeofday() < 0.8
+			then
+				self.object:set_hp(self.object:get_hp()-self.light_damage)
+				if self.sounds and self.sounds.damage_light then
+					minetest.sound_play(self.sounds.damage_light, {object = self.object})
+				end
+				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
+					self.object:remove()
+				end
+			end
+			
+			if self.water_damage and self.water_damage ~= 0 and
+				minetest.get_item_group(n.name, "water") ~= 0
+			then
+				self.object:set_hp(self.object:get_hp()-self.water_damage)
+				if self.sounds and self.sounds.damage_water then
+					minetest.sound_play(self.sounds.damage_water, {object = self.object})
+				end
+				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
+					self.object:remove()
+				end
+			end
+			
+			if self.lava_damage and self.lava_damage ~= 0 and
+				minetest.get_item_group(n.name, "lava") ~= 0
+			then
+				self.object:set_hp(self.object:get_hp()-self.lava_damage)
+				if self.sounds and self.sounds.damage_lava then
+					minetest.sound_play(self.sounds.damage_lava, {object = self.object})
+				end
+				if self.object:get_hp() == 0 then
+					if self.sounds and self.sounds.die then
+						minetest.sound_play(self.sounds.die, {object = self.object})
+					end
+					self.object:remove()
+				end
+			end
+		end
+		
+		self.env_damage_timer = self.env_damage_timer + dtime
+		if self.state == "attack" and self.env_damage_timer > 1 then
+			self.env_damage_timer = 0
+			do_env_damage(self)
+		elseif self.state ~= "attack" then
+			do_env_damage(self)
+		end
+		
+		if self.type == "monster" and minetest.setting_getbool("enable_damage") then
+			local s = self.object:getpos()
+			for _,player in pairs(minetest.get_connected_players()) do
+				local p = player:getpos()
+				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+				if dist < self.view_range then
+					if self.attack.dist then
+						if dist < self.attack.dist then
+							self.attack.player = player
+							self.attack.dist = dist
+						end
+					else
+						self.state = "attack"
+						self.attack.player = player
+						self.attack.dist = dist
+					end
+				end
+			end
+			if self.attack.player then
+				local p = self.attack.player:getpos()
+				if not p or not s or not minetest.line_of_sight({x=s.x, y=s.y+1, z=s.z}, {x=p.x, y=p.y+1, z=p.z}) then
+					self.state = "stand"
+					self.attack = {player = nil, dist = nil}
+				end
+			end
+		end
+		
+		if self.follow and self.follow ~= "" and not self.following then
+			for _,player in pairs(minetest.get_connected_players()) do
+				local s = self.object:getpos()
+				local p = player:getpos()
+				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+				if self.view_range and dist < self.view_range then
+					self.following = player
+				end
+			end
+		end
+		
+		if self.following and self.following:is_player() then
+			if self.following:get_wielded_item():get_name() ~= self.follow then
+				self.following = nil
+				self.v_start = false
+			else
+				local s = self.object:getpos()
+				local p = self.following:getpos()
+				local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+				if dist > self.view_range then
+					self.following = nil
+					self.v_start = false
+				else
+					local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if p.x > s.x then
+						yaw = yaw+math.pi
+					end
+					self.object:setyaw(yaw)
+					if dist > 2 then
+						if not self.v_start then
+							self.v_start = true
+							self.set_velocity(self, self.walk_velocity)
+						else
+							if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
+								self:jump()
+							end
+							self.set_velocity(self, self.walk_velocity)
+						end
+						self:set_animation("walk")
+					else
+						self.v_start = false
+						self.set_velocity(self, 0)
+						self:set_animation("stand")
+					end
+					return
+				end
+			end
+		end
+		
+		if self.state == "stand" then
+			if math.random(1, 4) == 1 then
+				self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
+			end
+			self.set_velocity(self, 0)
+			self.set_animation(self, "stand")
+			if math.random(1, 100) <= 50 then
+				self.set_velocity(self, self.walk_velocity)
+				self.state = "walk"
+				self.set_animation(self, "walk")
+			end
+		elseif self.state == "walk" then
+			if math.random(1, 100) <= 30 then
+				self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/180*math.pi))
+			end
+			if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
+				self:jump()
+			end
+			self:set_animation("walk")
+			self.set_velocity(self, self.walk_velocity)
+			if math.random(1, 100) <= 10 then
+				self.set_velocity(self, 0)
+				self.state = "stand"
+				self:set_animation("stand")
+			end
+		elseif self.state == "attack" and self.attack_type == "dogfight" then
+			if not self.attack.player or not self.attack.player:is_player() then
+				self.state = "stand"
+				self:set_animation("stand")
+				self.attack = {player=nil, dist=nil}
+				return
+			end
+			local s = self.object:getpos()
+			local p = self.attack.player:getpos()
+			local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+			if dist > self.view_range or self.attack.player:get_hp() <= 0 then
+				self.state = "stand"
+				self.v_start = false
+				self.set_velocity(self, 0)
+				self.attack = {player=nil, dist=nil}
+				self:set_animation("stand")
+				return
+			else
+				self.attack.dist = dist
+			end
+			
+			local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
+			local yaw = math.atan(vec.z/vec.x)+math.pi/2
+			if self.drawtype == "side" then
+				yaw = yaw+(math.pi/2)
+			end
+			if p.x > s.x then
+				yaw = yaw+math.pi
+			end
+			self.object:setyaw(yaw)
+			if self.attack.dist > 2 then
+				if not self.v_start then
+					self.v_start = true
+					self.set_velocity(self, self.run_velocity)
+				else
+					if self.jump and self.get_velocity(self) <= 0.5 and self.object:getvelocity().y == 0 then
+						self:jump()
+					end
+					self.set_velocity(self, self.run_velocity)
+				end
+				self:set_animation("run")
+			else
+				self.set_velocity(self, 0)
+				self:set_animation("punch")
+				self.v_start = false
+				if self.timer > 1 then
+					self.timer = 0
+					if self.sounds and self.sounds.attack then
+						minetest.sound_play(self.sounds.attack, {object = self.object})
+					end
+					self.attack.player:punch(self.object, 1.0,  {
+						full_punch_interval=1.0,
+						damage_groups = {fleshy=self.damage}
+					}, vec)
+				end
+			end
+		elseif self.state == "attack" and self.attack_type == "shoot" then
+			if not self.attack.player or not self.attack.player:is_player() then
+				self.state = "stand"
+				self:set_animation("stand")
+				self.attack = {player=nil, dist=nil}
+				return
+			end
+			local s = self.object:getpos()
+			local p = self.attack.player:getpos()
+			local dist = ((p.x-s.x)^2 + (p.y-s.y)^2 + (p.z-s.z)^2)^0.5
+			if dist > self.view_range or self.attack.player:get_hp() <= 0 then
+				self.state = "stand"
+				self.v_start = false
+				self.set_velocity(self, 0)
+				self.attack = {player=nil, dist=nil}
+				self:set_animation("stand")
+				return
+			else
+				self.attack.dist = dist
+			end
+			
+			local vec = {x=p.x-s.x, y=p.y-s.y, z=p.z-s.z}
+			local yaw = math.atan(vec.z/vec.x)+math.pi/2
+			if self.drawtype == "side" then
+				yaw = yaw+(math.pi/2)
+			end
+			if p.x > s.x then
+				yaw = yaw+math.pi
+			end
+			self.object:setyaw(yaw)
+			self.set_velocity(self, 0)
+			
+			if self.timer > self.shoot_interval and math.random(1, 100) <= 60 then
+				self.timer = 0
+				
+				self:set_animation("punch")
+				
+				if self.sounds and self.sounds.attack then
+					minetest.sound_play(self.sounds.attack, {object = self.object})
+				end
+				
+				local p = self.object:getpos()
+				p.y = p.y + (self.collisionbox[2]+self.collisionbox[5])/2
+				local obj = minetest.add_entity(p, self.arrow)
+				local amount = (vec.x^2+vec.y^2+vec.z^2)^0.5
+				local v = obj:get_luaentity().velocity
+				vec.y = vec.y+1
+				vec.x = vec.x*v/amount
+				vec.y = vec.y*v/amount
+				vec.z = vec.z*v/amount
+				obj:setvelocity(vec)
+			end
+		end
+	end,
+	
+	on_activate = function(self, staticdata, dtime_s)
+		self.object:set_armor_groups({fleshy=self.armor})
+		self.object:setacceleration({x=0, y=-10, z=0})
+		self.state = "stand"
+		self.attack = {player = nil, dist = nil}
+		self.object:setvelocity({x=0, y=self.object:getvelocity().y, z=0})
+		self.object:setyaw(math.random(1, 360)/180*math.pi)
+		if self.type == "monster" and minetest.setting_getbool("only_peaceful_mobs") then
+			self.object:remove()
+		end
+		self.lifetimer = 600 - dtime_s
+		if staticdata then
+			local tmp = minetest.deserialize(staticdata)
+			if tmp and tmp.lifetimer then
+				self.lifetimer = tmp.lifetimer - dtime_s
+			end
+			if tmp and tmp.tamed then
+				self.tamed = tmp.tamed
+			end
+		end
+		if self.lifetimer <= 0 and not self.tamed then
 			self.object:remove()
 		end
 	end,
-})
-mobs:register_spawn("mobs:rat", {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
-
-minetest.register_craftitem("mobs:rat", {
-	description = "Rat",
-	inventory_image = "mobs_rat_inventory.png",
 	
-	on_place = function(itemstack, placer, pointed_thing)
-		if pointed_thing.above then
-			minetest.env:add_entity(pointed_thing.above, "mobs:rat")
-			itemstack:take_item()
-		end
-		return itemstack
+	get_staticdata = function(self)
+		local tmp = {
+			lifetimer = self.lifetimer,
+			tamed = self.tamed,
+		}
+		return minetest.serialize(tmp)
 	end,
-})
 	
-minetest.register_craftitem("mobs:rat_cooked", {
-	description = "Cooked Rat",
-	inventory_image = "mobs_cooked_rat.png",
-	
-	on_use = minetest.item_eat(3),
-})
-
-minetest.register_craft({
-	type = "cooking",
-	output = "mobs:rat_cooked",
-	recipe = "mobs:rat",
-	cooktime = 5,
-})
-
-mobs:register_mob("mobs:oerkki", {
-	type = "monster",
-	hp_max = 8,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_oerkki.x",
-	textures = {"mobs_oerkki.png"},
-	visual_size = {x=5, y=5},
-	makes_footstep_sound = false,
-	view_range = 15,
-	walk_velocity = 1,
-	run_velocity = 3,
-	damage = 4,
-	drops = {},
-	armor = 100,
-	drawtype = "front",
-	light_resistant = true,
-	water_damage = 1,
-	lava_damage = 1,
-	light_damage = 0,
-	attack_type = "dogfight",
-	animation = {
-		stand_start = 0,
-		stand_end = 23,
-		walk_start = 24,
-		walk_end = 36,
-		run_start = 37,
-		run_end = 49,
-		punch_start = 37,
-		punch_end = 49,
-		speed_normal = 15,
-		speed_run = 15,
-	},
-})
-mobs:register_spawn("mobs:oerkki", {"default:stone"}, 2, -1, 7000, 3, -10)
-
-mobs:register_mob("mobs:dungeon_master", {
-	type = "monster",
-	hp_max = 10,
-	collisionbox = {-0.7, -0.01, -0.7, 0.7, 2.6, 0.7},
-	visual = "mesh",
-	mesh = "mobs_dungeon_master.x",
-	textures = {"mobs_dungeon_master.png"},
-	visual_size = {x=8, y=8},
-	makes_footstep_sound = true,
-	view_range = 15,
-	walk_velocity = 1,
-	run_velocity = 3,
-	damage = 4,
-	drops = {
-		{name = "default:mese",
-		chance = 100,
-		min = 1,
-		max = 2,},
-	},
-	armor = 60,
-	drawtype = "front",
-	water_damage = 1,
-	lava_damage = 1,
-	light_damage = 0,
-	on_rightclick = nil,
-	attack_type = "shoot",
-	arrow = "mobs:fireball",
-	shoot_interval = 2.5,
-	sounds = {
-		attack = "mobs_fireball",
-	},
-	animation = {
-		stand_start = 0,
-		stand_end = 19,
-		walk_start = 20,
-		walk_end = 35,
-		punch_start = 36,
-		punch_end = 48,
-		speed_normal = 15,
-		speed_run = 15,
-	},
-})
-mobs:register_spawn("mobs:dungeon_master", {"default:stone"}, 2, -1, 7000, 1, -50)
-
-mobs:register_arrow("mobs:fireball", {
-	visual = "sprite",
-	visual_size = {x=1, y=1},
-	--textures = {{name="mobs_fireball.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=0.5}}}, FIXME
-	textures = {"mobs_fireball.png"},
-	velocity = 5,
-	hit_player = function(self, player)
-		local s = self.object:getpos()
-		local p = player:getpos()
-		local vec = {x=s.x-p.x, y=s.y-p.y, z=s.z-p.z}
-		player:punch(self.object, 1.0,  {
-			full_punch_interval=1.0,
-			damage_groups = {fleshy=4},
-		}, vec)
-		local pos = self.object:getpos()
-		for dx=-1,1 do
-			for dy=-1,1 do
-				for dz=-1,1 do
-					local p = {x=pos.x+dx, y=pos.y+dy, z=pos.z+dz}
-					local n = minetest.env:get_node(pos).name
-					if minetest.registered_nodes[n].groups.flammable or math.random(1, 100) <= 30 then
-						minetest.env:set_node(p, {name="fire:basic_flame"})
-					else
-						minetest.env:remove_node(p)
-					end
+	on_punch = function(self, hitter, time_from_last_punch, tool_capabilities)
+		-- drop items
+		if self.object:get_hp() > 0 then
+			if self.sounds and self.sounds.damage_punch then
+				minetest.sound_play(self.sounds.damage_punch, {object = self.object})
+			end
+			return
+		end
+		if self.sounds and self.sounds.die then
+			minetest.sound_play(self.sounds.die, {object = self.object})
+		end
+		if hitter and hitter:is_player() and hitter:get_inventory() then
+			for _,drop in ipairs(self.drops) do
+				if math.random(1, drop.chance) == 1 then
+						hitter:get_inventory():add_item("main", ItemStack(drop.name.." "..math.random(drop.min, drop.max)))
 				end
 			end
 		end
 	end,
-	hit_node = function(self, pos, node)
-		for dx=-1,1 do
-			for dy=-2,1 do
-				for dz=-1,1 do
-					local p = {x=pos.x+dx, y=pos.y+dy, z=pos.z+dz}
-					local n = minetest.env:get_node(pos).name
-					if minetest.registered_nodes[n].groups.flammable or math.random(1, 100) <= 30 then
-						minetest.env:set_node(p, {name="fire:basic_flame"})
-					else
-						minetest.env:remove_node(p)
-					end
+
+	__index = function(table,key)
+		return mobapi.default_definition[key]
+	end,}
+
+function mobapi.register_mob(name, def)
+	setmetatable (def, mobapi.default_definition)
+	minetest.register_entity(name, def)
+end
+
+mobapi.spawning_mobs = {}
+function mobapi.register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height, spawn_func)
+	if minetest.setting_getbool(string.gsub(name,":","_").."_spawn") == true then return end
+	mobapi.spawning_mobs[name] = true
+	minetest.register_abm({
+		nodenames = nodes,
+		neighbors = {"air"},
+		interval = 30,
+		chance = chance,
+		action = function(pos, node, _, active_object_count_wider)
+			if active_object_count_wider > active_object_count then return end
+			if not mobapi.spawning_mobs[name] then return end
+			pos.y = pos.y+1
+			if not minetest.get_node_light(pos) then return end
+			if minetest.get_node_light(pos) > max_light then return end
+			if minetest.get_node_light(pos) < min_light then return end
+			if pos.y > max_height then return end
+			if minetest.get_node(pos).name ~= "air" then return end
+			pos.y = pos.y+1
+			if minetest.get_node(pos).name ~= "air" then return end
+			if spawn_func and not spawn_func(pos, node) then return end
+			if minetest.setting_getbool("display_mob_spawn") then
+				minetest.chat_send_all("[mobapi] Add "..name.." at "..minetest.pos_to_string(pos))
+			end
+			minetest.add_entity(pos, name)
+		end
+	})
+end
+
+function mobapi.register_arrow(name, def)
+	minetest.register_entity(name, {
+		physical = false,
+		visual = def.visual,
+		visual_size = def.visual_size,
+		textures = def.textures,
+		velocity = def.velocity,
+		hit_player = def.hit_player,
+		hit_node = def.hit_node,
+		
+		on_step = function(self, dtime)
+			local pos = self.object:getpos()
+			if minetest.get_node(self.object:getpos()).name ~= "air" then
+				self.hit_node(self, pos, node)
+				self.object:remove()
+				return
+			end
+			pos.y = pos.y-1
+			for _,player in pairs(minetest.get_objects_inside_radius(pos, 1)) do
+				if player:is_player() then
+					self.hit_player(self, player)
+					self.object:remove()
+					return
 				end
 			end
 		end
-	end
-})
-
-if minetest.setting_get("log_mods") then
-	minetest.log("action", "mobs loaded")
+	})
 end
 
 

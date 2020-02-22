@@ -1,0 +1,93 @@
+API. Other mods can use the functions to add their own mobs.
+
+
+--
+-- Register the mob
+--
+
+mobapi.register_mob(name, definition)
+
+This functions registers a new mob as a Minetest entity.
+
+    name	the name of the mob (e.g. "mobs:dirt_monster")
+    definition	a table with the following fields
+        type		type of the mob ("monster" or "animal")
+        hp_max		same as in minetest.register_entity()
+        physical	same as in minetest.register_entity()
+        collisionbox	same as in minetest.register_entity()
+        visual		same as in minetest.register_entity()
+        visual_size	same as in minetest.register_entity()
+        textures	same as in minetest.register_entity()
+        mesh		same as in minetest.register_entity()
+        makes_footstep_sound same as in minetest.register_entity()
+        view_range	range in that the monster will see the playerand follow him
+        walk_velocity	velocity when the monster is walking around
+        run_velocity	velocity when the monster is attacking a player
+        damage		damage per second
+        drops		list of tables with the following fields:
+            name		itemname
+            chance		inverted chance (same as in abm) to get the item
+            min			minimum number of items
+            max			maximum number of items
+        armor		armor (integer)(3=lowest; 1=highest)(fleshy group is used)
+        drawtype	"front" or "side" for 2D entities
+        water_damage	damage per second if the mob is in water
+        lava_damage	damage per second if the mob is in lava
+        light_damage	damage per second if the mob is in light
+        on_rightclick	same as in minetest.register_entity()
+        attack_type	attack type of a monster ("dogfight", "shoot", maybe something like "explode" in the future)
+        arrow		if the attack_type="shoot" needed: the entity name of the arrow
+        shoot_interval	minimum shoot interval
+        sounds		table with sounds of the mob
+            random		played randomly
+            attack		played when a mob hits a player
+        animation	table with the animation ranges and speed of the model
+            stand_start
+            stand_end
+            walk_start
+            walk_end
+            run_start
+            run_end
+            punch_start
+            punch_end
+            speed_normal
+            speed_run		used when mob runs behind player to make animation faster
+
+
+--
+-- Spawn
+--
+
+mobapi.register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height)
+
+This function registers a spawn algorithm for the animal. Without this function the call the mobs won't spawn.
+
+    name is the name of the animal/monster
+    nodes is a list of nodenames on that the animal/monster can spawn
+    max_light is the maximum of light
+    min_light is the minimum of light
+    chance is same as in register_abm()
+    active_object_count mob is only spawned if active_object_count_wider of ABM is <= this
+    max_height is the maximum height the mob can spawn
+
+For each mob that spawns with this function is a field in mobs.spawning_mobs. It tells if the mob should spawn or not. Default is true. So other mods can only use the API of this mod by disabling the spawning of the default mobs in this mod.
+
+
+--
+-- Arrow
+--
+
+mobs:register_arrow(name, definition)
+
+This function registers a arrow for mobs with the attack type shoot.
+
+    name	name of the arrow
+    definition	table with the following values:
+        visual		same as in minetest.register_entity()
+        visual_size	same as in minetest.register_entity()
+        textures	same as in minetest.register_entity()
+        velocity	velocity of the arrow
+        hit_player(self, player)	function that is called when the arrow hits a player; this function should hurt the player
+        hit_node(self, pos, node)	function that is called when the arrow hits a node
+
+

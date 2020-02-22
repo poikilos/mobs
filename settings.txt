@@ -1,0 +1,7 @@
+# To use those settings add them to your minetest.conf
+
+# All hostile mobs will despawn.
+only_peaceful_mobs = true
+
+# Show a message in the chat when a mob spawns.
+display_mob_spawn = true
