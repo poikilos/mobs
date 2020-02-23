@@ -3,10 +3,11 @@ dofile(minetest.get_modpath("mobs").."/api.lua")
 mobs:register_mob("mobs:dirt_monster", {
 	type = "monster",
 	hp_max = 5,
-	collisionbox = {-0.4, -1, -0.4, 0.4, 0.9, 0.4},
-	visual = "upright_sprite",
-	visual_size = {x=1, y=2},
-	textures = {"mobs_dirt_monster.png", "mobs_dirt_monster_back.png"},
+	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
+	visual = "mesh",
+	mesh = "mobs_stone_monster.x",
+	textures = {"mobs_dirt_monster.png"},
+	visual_size = {x=3, y=2.6},
 	makes_footstep_sound = true,
 	view_range = 15,
 	walk_velocity = 1,
@@ -25,8 +26,20 @@ mobs:register_mob("mobs:dirt_monster", {
 	light_damage = 2,
 	on_rightclick = nil,
 	attack_type = "dogfight",
+	animation = {
+		speed_normal = 15,
+		speed_run = 15,
+		stand_start = 0,
+		stand_end = 14,
+		walk_start = 15,
+		walk_end = 38,
+		run_start = 40,
+		run_end = 63,
+		punch_start = 40,
+		punch_end = 63,
+	}
 })
---mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass"}, 3, -1, 7000, 3, 31000)
+mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass"}, 3, -1, 7000, 3, 31000)
 
 mobs:register_mob("mobs:stone_monster", {
 	type = "monster",
@@ -67,7 +80,7 @@ mobs:register_mob("mobs:stone_monster", {
 		punch_end = 63,
 	}
 })
---mobs:register_spawn("mobs:stone_monster", {"default:stone"}, 3, -1, 7000, 3, 0)
+mobs:register_spawn("mobs:stone_monster", {"default:stone"}, 3, -1, 7000, 3, 0)
 
 mobs:register_mob("mobs:sand_monster", {
 	type = "monster",
@@ -108,7 +121,7 @@ mobs:register_mob("mobs:sand_monster", {
 		punch_end = 105,
 	},
 })
---mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, -1, 7000, 3, 31000)
+mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, -1, 7000, 3, 31000)
 
 mobs:register_mob("mobs:tree_monster", {
 	type = "monster",
@@ -154,7 +167,7 @@ mobs:register_mob("mobs:tree_monster", {
 		punch_end = 62,
 	},
 })
---mobs:register_spawn("mobs:tree_monster", {"default:leaves", "default:jungleleaves"}, 3, -1, 7000, 3, 31000)
+mobs:register_spawn("mobs:tree_monster", {"default:leaves", "default:jungleleaves"}, 3, -1, 7000, 3, 31000)
 
 mobs:register_mob("mobs:sheep", {
 	type = "animal",
@@ -186,12 +199,36 @@ mobs:register_mob("mobs:sheep", {
 		walk_start = 81,
 		walk_end = 100,
 	},
+	follow = "farming:wheat",
+	view_range = 5,
 	
 	on_rightclick = function(self, clicker)
-		if self.naked then
+		local item = clicker:get_wielded_item()
+		if item:get_name() == "farming:wheat" then
+			if not self.tamed then
+				if not minetest.setting_getbool("creative_mode") then
+					item:take_item()
+					clicker:set_wielded_item(item)
+				end
+				self.tamed = true
+			elseif self.naked then
+				if not minetest.setting_getbool("creative_mode") then
+					item:take_item()
+					clicker:set_wielded_item(item)
+				end
+				self.food = (self.food or 0) + 1
+				if self.food >= 8 then
+					self.food = 0
+					self.naked = false
+					self.object:set_properties({
+						textures = {"mobs_sheep.png"},
+						mesh = "mobs_sheep.x",
+					})
+				end
+			end
 			return
 		end
-		if clicker:get_inventory() then
+		if clicker:get_inventory() and not self.naked then
 			self.naked = true
 			if minetest.registered_items["wool:white"] then
 				clicker:get_inventory():add_item("main", ItemStack("wool:white "..math.random(1,3)))
@@ -203,7 +240,7 @@ mobs:register_mob("mobs:sheep", {
 		end
 	end,
 })
---mobs:register_spawn("mobs:sheep", {"default:dirt_with_grass"}, 20, 8, 9000, 1, 31000)
+mobs:register_spawn("mobs:sheep", {"default:dirt_with_grass"}, 20, 8, 9000, 1, 31000)
 
 minetest.register_craftitem("mobs:meat_raw", {
 	description = "Raw Meat",
@@ -246,7 +283,7 @@ mobs:register_mob("mobs:rat", {
 		end
 	end,
 })
---mobs:register_spawn("mobs:rat", {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
+mobs:register_spawn("mobs:rat", {"default:dirt_with_grass", "default:stone"}, 20, -1, 7000, 1, 31000)
 
 minetest.register_craftitem("mobs:rat", {
 	description = "Rat",
@@ -309,7 +346,7 @@ mobs:register_mob("mobs:oerkki", {
 		speed_run = 15,
 	},
 })
---mobs:register_spawn("mobs:oerkki", {"default:stone"}, 2, -1, 7000, 3, -10)
+mobs:register_spawn("mobs:oerkki", {"default:stone"}, 2, -1, 7000, 3, -10)
 
 mobs:register_mob("mobs:dungeon_master", {
 	type = "monster",
@@ -353,7 +390,7 @@ mobs:register_mob("mobs:dungeon_master", {
 		speed_run = 15,
 	},
 })
---mobs:register_spawn("mobs:dungeon_master", {"default:stone"}, 2, -1, 7000, 1, -50)
+mobs:register_spawn("mobs:dungeon_master", {"default:stone"}, 2, -1, 7000, 1, -50)
 
 mobs:register_arrow("mobs:fireball", {
 	visual = "sprite",
@@ -399,59 +436,6 @@ mobs:register_arrow("mobs:fireball", {
 			end
 		end
 	end
-})
-
--------------------
--------------------
-------Dragon-------
--------------------
--------------------
-mobs:register_mob("mobs:dragon", {
-	type = "monster",
-	hp_max = 8,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
-	visual = "mesh",
-	mesh = "mobs_dragon.x",
-	textures = {"mobs_dragon.png"},
-	visual_size = {x=5, y=5},
-	makes_footstep_sound = false,
-	view_range = 15,
-	walk_velocity = 1,
-	run_velocity = 3,
-	damage = 4,
-	drops = {},
-	armor = 100,
-	drawtype = "front",
-	light_resistant = true,
-	water_damage = 1,
-	lava_damage = 1,
-	light_damage = 0,
-	attack_type = "dogfight",
-	animation = {
-		stand_start = 0,
-		stand_end = 40,
-		walk_start = 41,
-		walk_end = 61,
-		run_start = 62,
-		run_end = 103,
-		punch_start = 104,
-		punch_end = 113,
-		speed_normal = 62,
-		speed_run = 103,
-	},
-})
-
-minetest.register_craftitem("mobs:dragon", {
-	description = "Dragon",
-	inventory_image = "test_block.png",
-	
-	on_place = function(itemstack, placer, pointed_thing)
-		if pointed_thing.above then
-			minetest.env:add_entity(pointed_thing.above, "mobs:dragon")
-			itemstack:take_item()
-		end
-		return itemstack
-	end,
 })
 
 if minetest.setting_get("log_mods") then
